@@ -1,0 +1,22 @@
+{{- if .Values.enabled }}
+{{- if .Values.monitoring.kafka }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: bridge-metrics
+  namespace: {{ .Values.prometheus_namespace }}
+  labels:
+    app: prometheus
+spec:
+  selector:
+    matchLabels:
+      strimzi.io/kind: KafkaBridge
+  namespaceSelector:
+    matchNames:
+      - {{ .Values.monitoring.kafka.namespace }}
+  podMetricsEndpoints:
+  - path: /metrics
+    port: rest-api
+{{- end }}
+{{- end }}

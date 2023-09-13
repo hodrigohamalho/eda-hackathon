@@ -1,0 +1,8 @@
+apiVersion: v2
+appVersion: v3.2.0
+description: A Helm chart for customising the deployment of the Prometheus
+name: prometheus
+version: 0.0.1
+home: https://github.com/redhat-cop/helm-charts
+maintainers:
+- name: vinicius ferraz

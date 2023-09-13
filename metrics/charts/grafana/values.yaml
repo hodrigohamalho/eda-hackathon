@@ -1,0 +1,8 @@
+---
+enabled: true
+grafana_namespace: my-monitoring
+
+grafana:
+  replicas: 1
+  route: true
+  

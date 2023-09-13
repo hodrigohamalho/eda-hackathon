@@ -1,0 +1,22 @@
+{{- if .Values.enabled }}
+{{- if .Values.alertmanager }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.alertmanager.name }}
+  namespace: {{ .Values.prometheus_namespace }}
+  labels:
+    app: prometheus
+spec:
+  ports:
+    - name: alertmanager
+      port: 9093
+      targetPort: 9093
+      protocol: TCP
+  selector:
+    alertmanager: {{ .Values.alertmanager.name }}
+  type: ClusterIP
+{{- end }}
+{{- end }}
+

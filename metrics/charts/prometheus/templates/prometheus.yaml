@@ -1,0 +1,35 @@
+{{- if .Values.enabled }}
+{{- if .Values.prometheus }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus
+  namespace: {{ .Values.prometheus_namespace }}
+  labels:
+    app: prometheus
+spec:
+  replicas: {{ .Values.prometheus.replicas }}
+  serviceAccountName: {{ .Values.prometheus.serviceaccount }}
+  podMonitorSelector:
+    matchLabels:
+      app: prometheus
+  serviceMonitorSelector: {}
+  resources:
+    requests:
+      memory: 400Mi
+  enableAdminAPI: false
+  ruleSelector:
+    matchLabels:
+      role: alert-rules
+      app: prometheus
+  alerting:
+    alertmanagers:
+    - namespace: {{ .Values.prometheus_namespace }}
+      name: alertmanager
+      port: alertmanager
+  additionalScrapeConfigs:
+    name: {{ .Values.prometheus.additional_scrape_configs.name }}
+    key: {{ .Values.prometheus.additional_scrape_configs.key }}
+{{- end }}
+{{- end }}

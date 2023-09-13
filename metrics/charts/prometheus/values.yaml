@@ -1,0 +1,17 @@
+---
+enabled: true
+prometheus_namespace: my-monitoring
+
+prometheus:
+  replicas: 1
+  route: true
+  clusterrole: prometheus-server
+  clusterrolebinding: prometheus-server
+  serviceaccount: prometheus-server
+  additional_scrape_configs:
+    name: additional-scrape-configs
+    key: prometheus-additional.yaml
+
+
+monitoring:
+  kafka: false

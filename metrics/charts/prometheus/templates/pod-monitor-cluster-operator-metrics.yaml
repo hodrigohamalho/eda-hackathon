@@ -1,0 +1,22 @@
+{{- if .Values.enabled }}
+{{- if .Values.monitoring.kafka }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: cluster-operator-metrics
+  namespace: {{ .Values.prometheus_namespace }}
+  labels:
+    app: prometheus
+spec:
+  selector:
+    matchLabels:
+      strimzi.io/kind: cluster-operator
+  namespaceSelector:
+    matchNames:
+      - {{ .Values.monitoring.kafka.namespace }}
+  podMetricsEndpoints:
+  - path: /metrics
+    port: http
+{{- end }}
+{{- end }}

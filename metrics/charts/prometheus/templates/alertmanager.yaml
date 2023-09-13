@@ -1,0 +1,14 @@
+{{- if .Values.enabled }}
+{{- if .Values.alertmanager }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  name: {{ .Values.alertmanager.name }}
+  namespace: {{ .Values.prometheus_namespace }}
+  labels:
+    app: prometheus
+spec:
+  replicas: {{ .Values.alertmanager.replicas }}
+{{- end }}
+{{- end }}
