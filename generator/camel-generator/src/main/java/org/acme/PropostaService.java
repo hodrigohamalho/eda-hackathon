@@ -12,10 +12,6 @@ public class PropostaService {
 
     private final Random random = new Random();
     
-    public String criarProposta(Proposta proposta){
-		  return "proposta: "+proposta.getId();
-    }
-
     public Proposta generateOrder() {
         Proposta proposta = new Proposta();
         proposta.setAprovada(false);

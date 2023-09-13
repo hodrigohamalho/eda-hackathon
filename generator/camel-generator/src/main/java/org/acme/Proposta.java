@@ -6,8 +6,8 @@ public class Proposta implements Serializable{
     
     private static final long serialVersionUID = -1405849549831347801L;
     private int id;
-    private String corretor;
     private String cliente;
+    private String corretor;
     private Double valor;
     private Boolean aprovada;
     
@@ -47,7 +47,7 @@ public class Proposta implements Serializable{
 
     @Override
     public String toString() {
-        return "Orcamento [id=" + id + ", corretor=" + corretor + ", cliente=" + cliente + ", valor=" + valor + ", aprovada="+ aprovada +"]";
+        return "Proposta [id=" + id + ", corretor=" + corretor + ", cliente=" + cliente + ", valor=" + valor + ", aprovada="+ aprovada +"]";
     }
     
 }
