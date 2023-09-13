@@ -2,7 +2,7 @@ package org.acme;
 
 import java.io.Serializable;
 
-public class Order implements Serializable{
+public class Proposta implements Serializable{
     
     private static final long serialVersionUID = -1405849549831347801L;
     private int id;

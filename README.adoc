@@ -1,0 +1,11 @@
+= EDA Hackathon
+
+== Gerador Proposta
+
+    mvn compile quarkus:dev
+
+== Analisar Proposta
+
+    oc create secret generic analisar-proposta --from-file application.properties
+
+    kamel run AnalisarProposta.java --dev --config secret:analisar-proposta

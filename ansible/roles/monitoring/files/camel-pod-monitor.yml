@@ -4,11 +4,11 @@ metadata:
   labels:
     app: monitoring
   name: camel-metrics
-  namespace: poc
+  namespace: hackathon
 spec:
   namespaceSelector:
     matchNames:
-      - poc
+      - hackathon
   podMetricsEndpoints:
     - path: /q/metrics
       port: http

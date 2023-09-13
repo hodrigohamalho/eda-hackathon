@@ -2,9 +2,9 @@ apiVersion: registry.apicur.io/v1
 kind: ApicurioRegistry
 metadata:
   name: service-registry
-  namespace: poc
+  namespace: hackathon
 spec:
   configuration:
     kafkasql:
-      bootstrapServers: 'my-source-cluster-kafka-bootstrap.poc.svc:9092'
+      bootstrapServers: 'my-source-cluster-kafka-bootstrap.hackathon.svc:9092'
     persistence: kafkasql

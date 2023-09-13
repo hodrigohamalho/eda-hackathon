@@ -8,11 +8,11 @@ public class MyRouteBuilder extends RouteBuilder{
     @Override
     public void configure() throws Exception {
         from("timer:geradorOrcamento")
-            .bean(OrderService.class, "generateOrder")
-            .log("Orcamento do ${body.cliente} criado")
+            .bean(PropostaService.class, "generateOrder")
+            .log("Proposta do ${body.cliente} criado")
             .marshal().json(JsonLibrary.Jackson) // convert JSON
             .log("Enviando para o Kafka: ${body}")
-            .to("kafka:orcamentos");
+            .to("kafka:propostas");
     }
     
 }

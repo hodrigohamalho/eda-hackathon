@@ -4,7 +4,7 @@ metadata:
   labels:
     k8s-app: prometheus-app-monitor
   name: prometheus-app-monitor
-  namespace: poc
+  namespace: hackathon
 spec:
   endpoints:
   - interval: 5s

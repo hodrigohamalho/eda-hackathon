@@ -2,7 +2,7 @@ apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
   name: cluster-collector
-  namespace: poc
+  namespace: hackathon
 spec:
   mode: deployment
   config: |
@@ -15,7 +15,7 @@ spec:
       batch:
     exporters:
       jaeger:
-        endpoint: jaeger-collector.poc.svc:14250
+        endpoint: jaeger-collector.hackathon.svc:14250
         tls:
           ca_file: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
     service:

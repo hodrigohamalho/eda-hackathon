@@ -3,7 +3,7 @@ package org.acme;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class OrderService {
+public class PropostaService {
 
     private String[] corretores = { "Ramalho", "Sampaio", "Bruno Rosseto", "Thiago Araki", "Braga", "Gilson" };
     private String[] clientes = { "Rodrigo", "Rafael", "Ian", "Carol", "Samara", "Rebeca" };
@@ -12,18 +12,18 @@ public class OrderService {
 
     private final Random random = new Random();
     
-    public String createOrder(Order order){
-		  return "order: "+order.getId();
+    public String criarProposta(Proposta proposta){
+		  return "proposta: "+proposta.getId();
     }
 
-    public Order generateOrder() {
-        Order order = new Order();
-        order.setAprovada(false);
-        order.setId(counter.incrementAndGet());
-        order.setValor(Double.valueOf(random.nextInt(5000-500) + 500));
-        order.setCliente(getCliente());
-        order.setCorretor(getCorretor());
-        return order;
+    public Proposta generateOrder() {
+        Proposta proposta = new Proposta();
+        proposta.setAprovada(false);
+        proposta.setId(counter.incrementAndGet());
+        proposta.setValor(Double.valueOf(random.nextInt(5000-500) + 500));
+        proposta.setCliente(getCliente());
+        proposta.setCorretor(getCorretor());
+        return proposta;
     }
 
     public String getCliente(){
