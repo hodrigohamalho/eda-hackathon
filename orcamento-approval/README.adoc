@@ -1,0 +1,5 @@
+== Aprovar Orcamento
+
+    oc create secret generic aprovar-orcamento --from-file application.properties
+
+    kamel run AprovarOrcamento.java --dev --config secret:aprovar-orcamento

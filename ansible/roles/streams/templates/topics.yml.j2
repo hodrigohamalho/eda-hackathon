@@ -1,0 +1,35 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  labels:
+    strimzi.io/cluster: '{{ kafka_cluster }}'
+  name: orcamentos
+spec:
+  config: {}
+  partitions: 3
+  replicas: 2
+  topicName: orcamentos
+--- 
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  labels:
+    strimzi.io/cluster: '{{ kafka_cluster }}'
+  name: propostas
+spec:
+  config: {}
+  partitions: 3
+  replicas: 2
+  topicName: propostas
+--- 
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  labels:
+    strimzi.io/cluster: '{{ kafka_cluster }}'
+  name: contratos
+spec:
+  config: {}
+  partitions: 3
+  replicas: 2
+  topicName: contratos
