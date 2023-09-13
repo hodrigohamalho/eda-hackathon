@@ -1,16 +1,16 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: event-consumer-app-monitor
-  namespace: my-monitoring
+  name: metrics-monitor
+  namespace: hackhathon
   labels:
     app: prometheus
 spec:
   namespaceSelector:
     matchNames:
-      - my-project
+      - hackathon
   podMetricsEndpoints:
-    - interval: 10s
+    - interval: 5s
       path: /q/metrics
       scheme: http
       targetPort: 8080
