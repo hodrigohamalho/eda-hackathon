@@ -9,3 +9,9 @@
     oc create secret generic analisar-proposta --from-file application.properties
 
     kamel run -t prometheus.enabled=true -t telemetry.enabled=true AnalisarProposta.java -d camel:jq --label app-with-metrics=quarkus-app --dev --config secret:analisar-proposta
+
+== Proposta to Apolice
+
+    oc create secret generic proposta-to-apolice --from-file application.properties
+
+    kamel run -t prometheus.enabled=true -t telemetry.enabled=true PropostaToApolice.java --label app-with-metrics=quarkus-app --dev --config secret:proposta-to-apolice

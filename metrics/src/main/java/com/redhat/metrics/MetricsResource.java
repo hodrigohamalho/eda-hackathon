@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -14,7 +13,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
@@ -39,7 +37,7 @@ public class MetricsResource {
     @Channel("events")
     Emitter<Proposta> eventEmitter;
 
-    // Map<String, Score> mapUserMaxScore = Collections.synchronizedMap(new HashMap<>());
+    Map<String, MelhorProposta> melhoresPropostasAprovadas = Collections.synchronizedMap(new HashMap<>());
 
     @GET
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -52,76 +50,60 @@ public class MetricsResource {
     public void consume(Proposta proposta) {
         System.out.println("reading proposta from Kafka");
         System.out.println(proposta);
+        createMetrics(proposta.getCorretor(), proposta.getValor(), false);
     }
 
+    @Incoming("propostasaprovadas")
+    public void propostasaprovadas(Proposta proposta) {
+        System.out.println("reading proposta APROVADA from Kafka");
+        System.out.println(proposta);
+        createMetrics(proposta.getCorretor(), proposta.getValor(), true);
+    }
 
-    // @POST
-    // @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    // @Blocking
-    // public CompletionStage<Void> post(
-    //         @FormParam("kind") String kind, @FormParam("player") int player,
-    //         @FormParam("user") String user, @FormParam("score") Integer score,
-    //         @FormParam("userName") String userName,
-    //         MultivaluedMap<String, String> form) {
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void post(
+            @FormParam("corretor") String corretor, @FormParam("valor") Double valor,
+            @FormParam("aprovada") Boolean aprovada) {
+        System.out.println("corretor: "+corretor);
+        System.out.println("valor: "+valor);
+        System.out.println("aprovada: "+aprovada);
+        createMetrics(corretor, valor, aprovada);
+    }
 
-    //     System.out.println("kind: "+kind);
-    //     System.out.println("player: "+player);
-    //     System.out.println("user: "+user);
-    //     System.out.println("score: "+score);
-    //     System.out.println("username: "+userName);
-    //     createMetrics(kind, player, user, score, userName);
+    private void createMetrics(String corretor, Double valor, Boolean aprovada) {
+        List<Tag> tags = initTags(corretor, valor);
 
-    //     //Send to Kafka
-    //     Event event = new Event(kind, players[player], score, user, userName);
-    //     return eventEmitter.send(event);
-    // }
+        if(aprovada) {
+            registry.counter("com.redhat.metrics.propostas.aprovadas", tags).increment();
+            maxAprovada(corretor, valor);
+        }else {
+            registry.counter("com.redhat.metrics.propostas", tags).increment();
+        }
+    }
 
-    // private void createMetrics(String kind, int player, String user, Integer score, String userName) {
-    //     List<Tag> tags = initTags(kind, player, user, userName);
+    private List<Tag> initTags(String corretor, Double valor) {
+        List<Tag> tags = new ArrayList<>();
+        tags.add(Tag.of("corretor", "" + corretor));
+        tags.add(Tag.of("valor", valor.toString()));
+        return tags;
+    }
 
-    //     // Generic counter
-    //     registry.counter("com.redhat.metrics", tags).increment();
-
-    //     // Counter per event kind
-    //     registry.counter("com.redhat.metrics." + kind, tags).increment();
-
-    //     System.out.println("Comparing the kind with game over");
-    //     // Counter per Game Over/Score
-    //     if ("game_over".equals(kind)) {
-    //         System.out.println("Joined in the loop");
-    //         // Its working for this Demo, =D.
-    //         // Do not use in Prodution
-    //         gameOverMetric(user, userName, score);
-    //     }
-    // }
-
-    // private List<Tag> initTags(String kind, int player, String user, String userName) {
-    //     List<Tag> tags = new ArrayList<>();
-
-    //     tags.add(Tag.of("kind", "" + kind));
-    //     tags.add(Tag.of("user", "" + user));
-    //     tags.add(Tag.of("userName", userName));
-    //     tags.add(Tag.of("player", players[player]));
-    //     return tags;
-    // }
-
-    // private void gameOverMetric(String user, String userName, Integer score) {
-    //     List<Tag> tags = new ArrayList<>();
-    //     // change user per name?
-    //     tags.add(Tag.of("user", "" + user));
-    //     tags.add(Tag.of("userName", userName));
-    //     Score scoreObj = new Score(score);
-    //     String userKey = user+userName;
-    //     Score scoreMapped = mapUserMaxScore.get(userKey);
-    //     if (scoreMapped == null) {
-    //         mapUserMaxScore.put(userKey, scoreObj);
-    //         Gauge.builder("com.redhat.metrics.score", scoreObj, (v) -> {
-    //             return v.getValue();
-    //         }).tags(tags).register(registry);
-    //     } else {
-    //         scoreMapped.setMaxValue(score);
-    //     }
-
-    // }
+    private void maxAprovada(String corretor, Double valor) {
+        List<Tag> tags = new ArrayList<>();
+        // change user per name?
+        tags.add(Tag.of("corretor", "" + corretor));
+        tags.add(Tag.of("valor", valor.toString()));
+        MelhorProposta scoreObj = new MelhorProposta(valor);
+        MelhorProposta scoreMapped = melhoresPropostasAprovadas.get(corretor);
+        if (scoreMapped == null) {
+            melhoresPropostasAprovadas.put(corretor, scoreObj);
+            Gauge.builder("com.redhat.propostas.melhores", scoreObj, (v) -> {
+                return v.getValue();
+            }).tags(tags).register(registry);
+        } else {
+            scoreMapped.setMaxValue(valor);
+        }
+    }
 
 }

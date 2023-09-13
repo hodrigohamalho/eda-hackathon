@@ -1,0 +1,24 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: mysql-sink-binding
+spec:
+  source:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: propostas-aprovadas
+    properties:
+      bootstrapServers: my-cluster-kafka-bootstrap:9092
+
+  sink:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: mysql-sink
+    properties:
+      databaseName: sampledb
+      password: redhat
+      query: INSERT INTO proposta ('id', 'cliente', 'corretor', 'valor', 'aprovada') VALUES (:#id, :#cliente, :#corretor, :#valor, :#aprovada)
+      serverName: mysql
+      username: redhat

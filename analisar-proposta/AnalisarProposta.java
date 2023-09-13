@@ -8,43 +8,16 @@ public class AnalisarProposta extends RouteBuilder {
 
     from("kafka:propostas?groupId=aprovaProposta")
       .choice()
-        .when().jq(".valor > 2000")
+        .when().jq(".valor > 3000")
           .unmarshal().json()
           .log("valor: ${body['valor']} aprovada, enviando pro Kafka: orcamentos-aprovados")
           .transform().jq(".aprovada = true")
-          .unmarshal().json()
+          .marshal().json(JsonLibrary.Jackson) // convert JSON
           .to("kafka:propostas-aprovadas")
+          .to("mock:notifica-corretor")
         .otherwise()
-          .to("kafka:propostas-reprovadas")
-          .unmarshal().json()
-          .log("valor: ${body['valor']} reprovada");
+          .to("kafka:propostas-reprovadas");
       
   }
   
-  
 }
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-// from("telegram:bots")
-//   .setHeader("CamelHttpMethod", constant("GET"))
-//   .to("https://api.chucknorris.io/jokes/random")
-//   .unmarshal().json(JsonLibrary.Jackson)
-//   .transform(simple("${body[value]}"))
-// .to("telegram:bots");
