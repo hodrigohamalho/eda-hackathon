@@ -24,7 +24,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.smallrye.common.annotation.Blocking;
 
-@Path("/events")
+@Path("/propostas")
 public class MetricsResource {
 
     @Inject
@@ -41,9 +41,8 @@ public class MetricsResource {
 
     @GET
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Blocking
     public void get() {
-        logger.debug("GreetingResource.get()");
+        logger.debug("MetricsResource.get()");
     }
 
     @Incoming("propostas")
@@ -72,7 +71,11 @@ public class MetricsResource {
     }
 
     private void createMetrics(String corretor, Double valor, Boolean aprovada) {
-        List<Tag> tags = initTags(corretor, valor);
+
+        //contador global
+        registry.counter("com.redhat.metrics.propostas").increment();
+
+        List<Tag> tags = initTags(corretor);
 
         if(aprovada) {
             registry.counter("com.redhat.metrics.propostas.aprovadas", tags).increment();
@@ -80,12 +83,13 @@ public class MetricsResource {
         }else {
             registry.counter("com.redhat.metrics.propostas", tags).increment();
         }
+        
+        
     }
 
-    private List<Tag> initTags(String corretor, Double valor) {
+    private List<Tag> initTags(String corretor) {
         List<Tag> tags = new ArrayList<>();
         tags.add(Tag.of("corretor", "" + corretor));
-        tags.add(Tag.of("valor", valor.toString()));
         return tags;
     }
 
@@ -93,7 +97,6 @@ public class MetricsResource {
         List<Tag> tags = new ArrayList<>();
         // change user per name?
         tags.add(Tag.of("corretor", "" + corretor));
-        tags.add(Tag.of("valor", valor.toString()));
         MelhorProposta scoreObj = new MelhorProposta(valor);
         MelhorProposta scoreMapped = melhoresPropostasAprovadas.get(corretor);
         if (scoreMapped == null) {
