@@ -8,9 +8,6 @@ spec:
       kind: KafkaTopic
       apiVersion: kafka.strimzi.io/v1beta1
       name: propostas-aprovadas
-    properties:
-      bootstrapServers: my-cluster-kafka-bootstrap:9092
-
   sink:
     ref:
       kind: Kamelet

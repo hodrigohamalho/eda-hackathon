@@ -8,13 +8,12 @@ public class AnalisarProposta extends RouteBuilder {
 
     from("kafka:propostas?groupId=aprovaProposta")
       .choice()
-        .when().jq(".valor > 3000")
+        .when().jq(".valor > 2000")
           .unmarshal().json()
           .log("valor: ${body['valor']} aprovada, enviando pro Kafka: orcamentos-aprovados")
           .transform().jq(".aprovada = true")
           .marshal().json(JsonLibrary.Jackson) // convert JSON
           .to("kafka:propostas-aprovadas")
-          .to("mock:notifica-corretor")
         .otherwise()
           .to("kafka:propostas-reprovadas");
       

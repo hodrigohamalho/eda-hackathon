@@ -7,7 +7,7 @@ public class MyRouteBuilder extends RouteBuilder{
 
     @Override
     public void configure() throws Exception {
-        from("timer:geradorOrcamento?period=3000")
+        from("timer:geradorProposta")
             .bean(PropostaService.class, "generateOrder")
             .log("Proposta do ${body.cliente} criado")
             .marshal().json(JsonLibrary.Jackson) // convert JSON

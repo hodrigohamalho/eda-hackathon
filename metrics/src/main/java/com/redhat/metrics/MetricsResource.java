@@ -52,7 +52,7 @@ public class MetricsResource {
         createMetrics(proposta.getCorretor(), proposta.getValor(), false);
     }
 
-    @Incoming("propostasaprovadas")
+    @Incoming("propostas-aprovadas")
     public void propostasaprovadas(Proposta proposta) {
         System.out.println("reading proposta APROVADA from Kafka");
         System.out.println(proposta);
